@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var Message = require('../models/message');
+var Note = require('../models/note');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -14,45 +14,44 @@ router.get('/', function(req, res, next) {
   } else {
     sort = -1;
   }
-  var query = [];
   var pam = {};
   if(req.query.echibition){
     pam.echibition = req.query.echibition;
   }
 
-  query = Message.find(pam).limit(maxSize).skip(offset).sort({dateCreated:sort}).populate("user").populate("reply");
+  query = Note.find(pam).limit(maxSize).skip(offset).sort({dateCreated:sort}).populate("exhibition");
   query.exec(function(err, part) {
     res.json(part);
   });
 });
 
 router.post('/', function(req, res, next) {
-  var message = new Message(req.body);
-  message.dateCreated = Date.now();
-  message.validate(function (err) {
+  var note = new Note(req.body);
+  note.dateCreated = Date.now();
+  note.validate(function (err) {
     if(err){
       console.log(String(err));
       return res.status(422).send(String(err));
     }else{
-      message.save(function(err) {
-        res.json(message);
+      note.save(function(err) {
+        res.json(note);
       });
     }
   });
 });
 
 router.put('/:id', function(req, res, next) {
-  Message.findOne({ _id: req.params.id }, function(err, message) {
+  Note.findOne({ _id: req.params.id }, function(err, note) {
     for (prop in req.body) {
-      message[prop] = req.body[prop];
+      note[prop] = req.body[prop];
     }
-    message.validate(function (err) {
+    note.validate(function (err) {
       if(err){
         console.log(String(err));
         return res.status(422).send(String(err));
       }else{
-        message.save(function(err) {
-          res.json(message);
+        note.save(function(err) {
+          res.json(note);
         });
       }
     });
@@ -61,15 +60,15 @@ router.put('/:id', function(req, res, next) {
 });
 
 router.get('/:id', function (req, res, next) {
-  Message.findOne({ _id: req.params.id}, function(err, message) {
-    res.json(message);
+  Note.findOne({ _id: req.params.id}, function(err, note) {
+    res.json(note);
   });
 });
 
 router.delete('/:id', function (req, res, next) {
-  Message.remove({
+  Note.remove({
     _id: req.params.id
-  }, function(err, message) {
+  }, function(err, note) {
     res.json('');
   });
 });

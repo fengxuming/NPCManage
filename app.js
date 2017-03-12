@@ -23,6 +23,8 @@ var exhibitions = require("./routes/exhibitions");
 var applications = require("./routes/applications");
 var messages = require("./routes/messages");
 var parts = require("./routes/parts");
+var discesses = require("./routes/discuss");
+var notes = require("./routes/note");
 
 
 
@@ -175,6 +177,8 @@ app.use("/exhibitions",exhibitions);
 app.use("/applications",applications);
 app.use("/messages",messages);
 app.use("/parts",parts);
+app.use("/discusses",discesses);
+app.use("/notes",notes);
 
 
 //init admin user

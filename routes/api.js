@@ -58,7 +58,7 @@ router.post('/register', function(req, res, next) {
         }
         else {
             var _user = new User(req.body);
-            _user.secret = req.body.secret;
+            _user.secret = req.body.password;
             _user.save(function(err,user) {
                 if (err) {
                     console.log(err);

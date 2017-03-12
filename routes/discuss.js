@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var Message = require('../models/message');
+var Discuss = require('../models/discuss');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -14,45 +14,52 @@ router.get('/', function(req, res, next) {
   } else {
     sort = -1;
   }
-  var query = [];
   var pam = {};
   if(req.query.echibition){
     pam.echibition = req.query.echibition;
   }
 
-  query = Message.find(pam).limit(maxSize).skip(offset).sort({dateCreated:sort}).populate("user").populate("reply");
+  query = Discuss.find(pam).limit(maxSize).skip(offset).sort({dateCreated:sort}).populate("exhibition").populate({
+    path:"user",
+    model:"User",
+    populate:{
+      path:"avatar",
+      model:"Resource"
+    }
+  }
+  );
   query.exec(function(err, part) {
     res.json(part);
   });
 });
 
 router.post('/', function(req, res, next) {
-  var message = new Message(req.body);
-  message.dateCreated = Date.now();
-  message.validate(function (err) {
+  var discuss = new Discuss(req.body);
+  discuss.dateCreated = Date.now();
+  discuss.validate(function (err) {
     if(err){
       console.log(String(err));
       return res.status(422).send(String(err));
     }else{
-      message.save(function(err) {
-        res.json(message);
+      discuss.save(function(err) {
+        res.json(discuss);
       });
     }
   });
 });
 
 router.put('/:id', function(req, res, next) {
-  Message.findOne({ _id: req.params.id }, function(err, message) {
+  Discuss.findOne({ _id: req.params.id }, function(err, discuss) {
     for (prop in req.body) {
-      message[prop] = req.body[prop];
+      discuss[prop] = req.body[prop];
     }
-    message.validate(function (err) {
+    discuss.validate(function (err) {
       if(err){
         console.log(String(err));
         return res.status(422).send(String(err));
       }else{
-        message.save(function(err) {
-          res.json(message);
+        discuss.save(function(err) {
+          res.json(discuss);
         });
       }
     });
@@ -61,15 +68,23 @@ router.put('/:id', function(req, res, next) {
 });
 
 router.get('/:id', function (req, res, next) {
-  Message.findOne({ _id: req.params.id}, function(err, message) {
-    res.json(message);
-  });
+  Discuss.findOne({ _id: req.params.id}, function(err, discuss) {
+    res.json(discuss);
+  }).populate("exhibition").populate({
+        path:"user",
+        model:"User",
+        populate:{
+          path:"avatar",
+          model:"Resource"
+        }
+      }
+  );
 });
 
 router.delete('/:id', function (req, res, next) {
-  Message.remove({
+  Discuss.remove({
     _id: req.params.id
-  }, function(err, message) {
+  }, function(err, discuss) {
     res.json('');
   });
 });
