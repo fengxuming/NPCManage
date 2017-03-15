@@ -28,7 +28,14 @@ router.get('/', function(req, res, next) {
   }
 
 
-  query = Application.find(pam).limit(maxSize).skip(offset).sort({dateCreated:sort}).populate('applicant').populate("exhibition");
+  query = Application.find(pam).limit(maxSize).skip(offset).sort({dateCreated:sort}).populate({
+    path:"applicant",
+    model:"User",
+    populate:{
+      path:"avatar",
+      model:"Resource"
+    }
+  }).populate("exhibition");
   query.exec(function(err, application) {
     res.json(application);
   });
@@ -71,7 +78,14 @@ router.put('/:id', function(req, res, next) {
 router.get('/:id', function (req, res, next) {
   Application.findOne({ _id: req.params.id}, function(err, application) {
     res.json(application);
-  }).populate('applicant').populate("exhibition");
+  }).populate({
+    path:"applicant",
+    model:"User",
+    populate:{
+      path:"avatar",
+      model:"Resource"
+    }
+  }).populate("exhibition");
 });
 
 router.delete('/:id', function (req, res, next) {
