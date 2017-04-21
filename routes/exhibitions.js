@@ -20,8 +20,11 @@ router.get('/', function(req, res, next) {
     pam.organizer = req.query.organizer;
   }
   if(req.query.title) {
-    pam.title = req.query.title;
+    var keyword = req.query.title;
+    var reg = new RegExp(keyword, 'i');
+    pam.$or = [{'title':{$regex : reg}}];
   }
+
 
   query = Exhibition.find(pam).limit(maxSize).skip(offset).sort({dateCreated:sort}).populate('organizer').populate("cover").populate("parts");
   query.exec(function(err, exhibition) {

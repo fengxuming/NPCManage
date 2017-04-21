@@ -25,6 +25,9 @@ router.get('/', function(req, res, next) {
   if(req.query.status){
     pam.status = req.query.status;
   }
+  if(req.query.CN){
+    pam.CN = req.query.CN;
+  }
 
   query = User.find(pam).limit(maxSize).skip(offset).sort({dateCreated:sort}).populate('avatar');
   query.exec(function(err, users) {
