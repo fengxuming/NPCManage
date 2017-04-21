@@ -23,7 +23,7 @@ router.get('/', function(req, res, next) {
     pam.title = req.query.title;
   }
 
-  query = Exhibition.find(pam).limit(maxSize).skip(offset).sort({dateCreated:sort}).populate('organizer').populate("cover");
+  query = Exhibition.find(pam).limit(maxSize).skip(offset).sort({dateCreated:sort}).populate('organizer').populate("cover").populate("parts");
   query.exec(function(err, exhibition) {
     res.json(exhibition);
   });
@@ -66,7 +66,7 @@ router.put('/:id', function(req, res, next) {
 router.get('/:id', function (req, res, next) {
   Exhibition.findOne({ _id: req.params.id}, function(err, user) {
     res.json(user);
-  }).populate('organizer').populate("cover");
+  }).populate('organizer').populate("cover").populate("parts");
 });
 
 router.delete('/:id', function (req, res, next) {

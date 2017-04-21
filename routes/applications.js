@@ -35,7 +35,7 @@ router.get('/', function(req, res, next) {
       path:"avatar",
       model:"Resource"
     }
-  }).populate("exhibition");
+  }).populate("exhibition").populate("parts").populate("decidePart");
   query.exec(function(err, application) {
     res.json(application);
   });
@@ -85,7 +85,7 @@ router.get('/:id', function (req, res, next) {
       path:"avatar",
       model:"Resource"
     }
-  }).populate("exhibition");
+  }).populate("exhibition").populate("parts").populate("decidePart");
 });
 
 router.delete('/:id', function (req, res, next) {

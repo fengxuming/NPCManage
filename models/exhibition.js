@@ -9,6 +9,7 @@ var exhibitionSchema = new Schema({
     title:{type:String,required:true},
     info:{type:String,required:true},
     beginDate:{type:Date,required:true},
+    parts:[{type:mongoose.Schema.Types.ObjectId,ref:"Part"}],
     endDate:{type:Date,required:true},
     dateCreated:{type:Date,default:Date.now()}
 });

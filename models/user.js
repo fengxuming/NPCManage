@@ -8,6 +8,7 @@ var Role = require('../models/role');
 var userSchema = new Schema({
     username: {type: String, required: true, unique: true},
     avatar:{type:mongoose.Schema.Types.ObjectId,ref:'Resource'},
+    realName:{type:String,required:true},
     CN: {type:String,required:true},
     secret:{type:String,required:true},
     password: { type: String},
@@ -45,7 +46,7 @@ userSchema.statics.initAdmin = function () {
     var _this = this;
     _this.findOne({username:"admin"}, function (err, user) {
         if(!user){
-            var admin = {"username":"admin", "secret":"12348765", CN:"admin",role:"admin"};
+            var admin = {"username":"admin", "secret":"12348765", CN:"admin",realName:"admin",role:"admin"};
             var user = new _this(admin);
             user.save(function (err) {
                 console.log(user);
